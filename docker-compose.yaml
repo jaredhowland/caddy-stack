@@ -40,6 +40,7 @@ services:
       context: ./docker/php
       args:
         - PHP_VERSION=$PHP_VERSION
+        - PHP_EXTENSIONS=$PHP_EXTENSIONS
     restart_policy:
       condition: unless-stopped
     ports:
