@@ -1,0 +1,48 @@
+version: '3.9'
+
+### NETWORKS #################
+networks:
+  www:
+
+### SERVICES #################
+services:
+  ### CADDY ##################
+  caddy:
+    container_name: caddy
+    environment:
+      - TZ=$TZ
+    networks:
+      - www
+    build:
+      context: ./docker/caddy
+      args:
+        - CADDY_VERSION=$CADDY_VERSION
+        - CADDY_MODULES=$CADDY_MODULES
+    restart_policy:
+      condition: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - $PWD/caddy/Caddyfile:/etc/caddy/Caddyfile
+      - $PWD/caddy/data:/data
+      - $PWD/caddy/config:/config
+      - $PWD/websites:/usr/share/caddy
+
+  ### PHP ####################
+  php-fpm:
+    container_name: php-fpm
+    environment:
+      - TZ=$TZ
+    networks:
+      - www
+    build:
+      context: ./docker/php
+      args:
+        - PHP_VERSION=$PHP_VERSION
+    restart_policy:
+      condition: unless-stopped
+    ports:
+      - "9000"
+    volumes:
+      - $PWD/websites:/usr/share/caddy
