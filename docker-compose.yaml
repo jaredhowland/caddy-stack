@@ -16,22 +16,26 @@ services:
     build:
       context: ./docker/caddy
       args:
-        - CADDY_VERSION=$CADDY_VERSION
-        - CADDY_MODULES=$CADDY_MODULES
+        - CADDY_VERSION=${CADDY_VERSION:-2.6.4}
+        - CADDY_VARIANT=${CADDY_VARIANT:-alpine}
+        - CADDY_MODULES=${CADDY_MODULES:-}
     restart_policy:
       condition: unless-stopped
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - $PWD/caddy/Caddyfile:/etc/caddy/Caddyfile
-      - $PWD/caddy/data:/data
-      - $PWD/caddy/config:/config
-      - $PWD/websites:/usr/share/caddy
+      - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ./websites:/usr/share/caddy
+      - caddy-config:/config
+      - caddy-data:/data
+    depends_on:
+      - php
+      - db
 
   ### PHP ####################
-  php-fpm:
-    container_name: php-fpm
+  php:
+    container_name: php
     environment:
       - TZ=$TZ
     networks:
@@ -39,11 +43,34 @@ services:
     build:
       context: ./docker/php
       args:
-        - PHP_VERSION=$PHP_VERSION
-        - PHP_EXTENSIONS=$PHP_EXTENSIONS
+        - PHP_VERSION=${PHP_VERSION:-8.2.3}
+        - PHP_VARIANT=${PHP_VARIANT:-fpm-alpine}
+        - PHP_EXTENSIONS=${PHP_EXTENSIONS:-mysqli pdo pdo_mysql}
     restart_policy:
       condition: unless-stopped
     ports:
-      - "9000"
+      - "9000:9000"
+
+  ### MARIADB ################
+  db:
+    container_name: db
+    environment:
+      - TZ=$TZ
+    networks:
+      - www
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD:-root-change-me}
+      MARIADB_USER: ${MARIADB_USER:-root}
+      MARIADB-PASSWORD: ${MARIADB_PASSWORD:-change-me}
+    image: mariadb:${MARIADB_VERSION:-10.11.2}
+    restart_policy:
+      condition: unless-stopped
+    ports:
+      - "3306:3306"
     volumes:
-      - $PWD/websites:/usr/share/caddy
+      - db-data:/config
+
+volumes:
+  caddy-config:
+  caddy-data:
+  db-data:
