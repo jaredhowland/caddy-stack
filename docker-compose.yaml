@@ -17,7 +17,7 @@ services:
       context: ./docker/caddy
       args:
         - CADDY_VERSION=${CADDY_VERSION:-2.6.4}
-        - CADDY_MODULES=${CADDY_MODULES:-}
+        - CADDY_MODULES=${CADDY_MODULES}
     ports:
       - "80:80"
       - "443:443"
