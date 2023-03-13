@@ -17,7 +17,6 @@ services:
       context: ./docker/caddy
       args:
         - CADDY_VERSION=${CADDY_VERSION:-2.6.4}
-        - CADDY_VARIANT=${CADDY_VARIANT:-alpine}
         - CADDY_MODULES=${CADDY_MODULES:-}
     restart_policy:
       condition: unless-stopped
