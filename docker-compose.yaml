@@ -1,68 +1,72 @@
 version: '3.9'
 
-### NETWORKS #################
-networks:
-  www:
-
 ### SERVICES #################
 services:
-  ### CADDY ##################
-  caddy:
-    container_name: caddy
-    environment:
-      - TZ=$TZ
-    networks:
-      - www
-    build:
-      context: ./docker/caddy
-      args:
-        - CADDY_VERSION=${CADDY_VERSION:-2.6.4}
-        - CADDY_MODULES=${CADDY_MODULES}
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile
-      - ./websites:/usr/share/caddy
-      - caddy-config:/config
-      - caddy-data:/data
-    depends_on:
-      - php
-      - db
-
   ### PHP ####################
   php:
-    container_name: php
-    environment:
-      - TZ=$TZ
-    networks:
-      - www
     build:
       context: ./docker/php
       args:
         - PHP_VERSION=${PHP_VERSION:-8.2.3}
         - PHP_VARIANT=${PHP_VARIANT:-fpm-alpine}
         - PHP_EXTENSIONS=${PHP_EXTENSIONS:-mysqli pdo pdo_mysql}
+    networks:
+      - backend
+    volumes:
+      - ${PROJECT_ROOT}/websites/:/var/www/html/
+    environment:
+      - TZ=${TZ:-America/New_York}
+      - DB_ROOT_PASSWORD=${DB_ROOT_PASSWORD:-root}
+      - DB_USER=${DB_USER:-admin}
+      - DB-PASSWORD=${DB_PASSWORD:-change-me}
+    container_name: ${DOCKER_IMAGE_PREFIX:-dev-}php
+    restart: always
+  ### CADDY ##################
+  caddy:
+    build:
+      context: ./docker/caddy
+      args:
+        - CADDY_VERSION=${CADDY_VERSION:-2.6.4}
+        - CADDY_MODULES=${CADDY_MODULES}
+    depends_on:
+      - php
+    networks:
+      - frontend
+      - backend
     ports:
-      - "9000:9000"
-
+      - "${CADDY_PORT:-80}:80"
+      - "${CADDY_SECURE_PORT:-443}:443"
+    volumes:
+      - ${PROJECT_ROOT}/caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ${PROJECT_ROOT}/websites:/usr/share/caddy
+      - caddy-config:/config
+      - caddy-data:/data
+    environment:
+      - TZ=${TZ:-America/New_York}
+      - CF_API_TOKEN=${CF_API_TOKEN:-insert-your-token-here}
+    container_name: ${DOCKER_IMAGE_PREFIX:-dev-}caddy
+    restart: always
   ### MARIADB ################
   db:
-    container_name: db
-    environment:
-      - TZ=$TZ
-    networks:
-      - www
-    environment:
-      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD:-root-change-me}
-      MARIADB_USER: ${MARIADB_USER:-root}
-      MARIADB-PASSWORD: ${MARIADB_PASSWORD:-change-me}
     image: mariadb:${MARIADB_VERSION:-10.11.2}
+    networks:
+      - backend
     ports:
-      - "3306:3306"
+      - "${DB_PORT:-3306}:3306"
     volumes:
       - db-data:/config
-
+    environment:
+      - TZ=${TZ:-America/New_York}
+      - DB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD:-root-change-me}
+      - DB_USER=${MARIADB_USER:-root}
+      - DB-PASSWORD=${MARIADB_PASSWORD:-change-me}
+    container_name: ${DOCKER_IMAGE_PREFIX:-dev-}db
+    restart: always
+networks:
+  frontend:
+    name: ${DOCKER_IMAGE_PREFIX:-dev-}frontend
+  backend:
+    name: ${DOCKER_IMAGE_PREFIX:-dev-}backend
 volumes:
   caddy-config:
   caddy-data:
