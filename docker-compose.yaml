@@ -1,3 +1,4 @@
+### https://blog.tkav.dev/running-your-lamp-stack-on-docker-containers ###
 version: '3.9'
 
 ### SERVICES #################
@@ -13,14 +14,14 @@ services:
     networks:
       - backend
     volumes:
-      - ${PROJECT_ROOT}/websites/:/var/www/html/
+      - ${PROJECT_ROOT}/websites:/var/www/html
     environment:
       - TZ=${TZ:-America/New_York}
       - DB_ROOT_PASSWORD=${DB_ROOT_PASSWORD:-root}
       - DB_USER=${DB_USER:-admin}
       - DB-PASSWORD=${DB_PASSWORD:-change-me}
-    container_name: ${DOCKER_IMAGE_PREFIX:-dev-}php
-    restart: always
+    container_name: php
+    restart: unless-stopped
   ### CADDY ##################
   caddy:
     build:
@@ -43,9 +44,9 @@ services:
       - caddy-data:/data
     environment:
       - TZ=${TZ:-America/New_York}
-      - CF_API_TOKEN=${CF_API_TOKEN:-insert-your-token-here}
-    container_name: ${DOCKER_IMAGE_PREFIX:-dev-}caddy
-    restart: always
+      - CF_API_TOKEN=${CF_API_TOKEN}
+    container_name: caddy
+    restart: unless-stopped
   ### MARIADB ################
   db:
     image: mariadb:${MARIADB_VERSION:-10.11.2}
@@ -60,13 +61,13 @@ services:
       - DB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD:-root-change-me}
       - DB_USER=${MARIADB_USER:-root}
       - DB-PASSWORD=${MARIADB_PASSWORD:-change-me}
-    container_name: ${DOCKER_IMAGE_PREFIX:-dev-}db
-    restart: always
+    container_name: db
+    restart: unless-stopped
 networks:
   frontend:
-    name: ${DOCKER_IMAGE_PREFIX:-dev-}frontend
+    name: frontend
   backend:
-    name: ${DOCKER_IMAGE_PREFIX:-dev-}backend
+    name: backend
 volumes:
   caddy-config:
   caddy-data:

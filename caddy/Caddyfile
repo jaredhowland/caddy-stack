@@ -8,15 +8,17 @@
 # this machine's public IP, then replace ":80" below with your
 # domain name.
 
-:80 {
+DOMAIN.TLD {
+    tls email@example.com {
+      dns cloudflare {env.CF_API_TOKEN}
+    }
+    encode zstd gzip
     # Set this path to your site's directory.
-    root * /usr/share/caddy
+    root * /var/www/html/
 
-    # Another common task is to set up a reverse proxy:
-    # reverse_proxy localhost:8080
-
-    # Or serve a PHP site through php-fpm:
-    php_fastcgi localhost:9000
+    # Serve a PHP site through php-fpm:
+    php_fastcgi php:9000
+    rewrite * /index.php?{query}
 
     # Enable the static file server.
     file_server
