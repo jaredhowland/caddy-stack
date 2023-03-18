@@ -16,7 +16,7 @@ There are lots of tutorials on setting up `SSH` access with `sudo` privileges. U
 
 If you are using a Debian-based distro, you can run this command to install the pre-requisite software:
 ```bash
-sudo dnf -y install git nano podman podman-compose`
+sudo dnf -y install git nano podman podman-compose
 ```
 
 
