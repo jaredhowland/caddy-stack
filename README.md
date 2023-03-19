@@ -39,7 +39,7 @@ nano caddy/Caddyfile
 nano .env
 # Copy your app/website files to this directory
 cd websites
-podman-compose --build
+podman-compose up --build
 ```
 Copy website files into `/path/to/desired/base/directory/caddy-stack/websites/`
 
