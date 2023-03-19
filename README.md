@@ -14,7 +14,7 @@ Pre-requisites
 
 There are lots of tutorials on setting up `SSH` access with `sudo` privileges. Use one if you need to get that set up.
 
-If you are using a Debian-based distro, you can run this command to install the pre-requisite software:
+If you are using a Fedora-based distro, you can run this command to install the pre-requisite software:
 ```bash
 sudo dnf -y install git nano podman podman-compose
 ```
@@ -33,3 +33,4 @@ nano caddy/Caddyfile
 nano .env
 podman-compose up --build
 ```
+Copy website files into `/path/to/desired/base/directory/caddy-stack/websites/`
