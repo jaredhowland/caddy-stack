@@ -9,16 +9,27 @@
 # domain name.
 
 DOMAIN.TLD {
+    # Setup Cloudflare so certificates can be auto-issued and renewed
     tls email@example.com {
       dns cloudflare {env.CF_API_TOKEN}
     }
+
+    # Compress files
     encode zstd gzip
+
     # Set this path to your site's directory.
     root * /var/www/html/
 
     # Serve a PHP site through php-fpm:
-    php_fastcgi php:9000
-    rewrite * /index.php?{query}
+    php_fastcgi php:9000 {
+      try_files {path} {path}/index.php =404
+    }
+
+    # Use a Caddy template to handle all errors
+    handle_errors {
+      rewrite * /{err.status_code}.php
+      file_server
+    }
 
     # Enable the static file server.
     file_server

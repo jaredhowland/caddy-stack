@@ -14,7 +14,7 @@ services:
     networks:
       - backend
     volumes:
-      - ${PROJECT_ROOT}/websites:/var/www/html
+      - ${PROJECT_ROOT}/caddy-stack/websites:/var/www/html
     environment:
       - TZ=${TZ:-America/New_York}
       - DB_ROOT_PASSWORD=${DB_ROOT_PASSWORD:-root}
@@ -38,8 +38,8 @@ services:
       - "${CADDY_PORT:-80}:80"
       - "${CADDY_SECURE_PORT:-443}:443"
     volumes:
-      - ${PROJECT_ROOT}/caddy/Caddyfile:/etc/caddy/Caddyfile
-      - ${PROJECT_ROOT}/websites:/usr/share/caddy
+      - ${PROJECT_ROOT}/caddy-stack/caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ${PROJECT_ROOT}/caddy-stack/websites:/var/www/html
       - caddy-config:/config
       - caddy-data:/data
     environment:
@@ -58,9 +58,9 @@ services:
       - db-data:/config
     environment:
       - TZ=${TZ:-America/New_York}
-      - DB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD:-root-change-me}
-      - DB_USER=${MARIADB_USER:-root}
-      - DB-PASSWORD=${MARIADB_PASSWORD:-change-me}
+      - DB_ROOT_PASSWORD=${DB_ROOT_PASSWORD:-root-change-me}
+      - DB_USER=${DB_USER:-root}
+      - DB-PASSWORD=${DB_PASSWORD:-change-me}
     container_name: db
     restart: unless-stopped
 networks:
