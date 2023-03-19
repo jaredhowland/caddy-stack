@@ -45,7 +45,7 @@ Copy website files into `/path/to/desired/base/directory/caddy-stack/websites/`
 
 Default MariaDB Information
 --------------------------
-**Root User**: `root`
-**Root User Password**: `root-change-me`
-**Regular User**: `admin`
-**Regular User Password**: `change-me`
+* **Root User**: `root`
+* **Root User Password**: `root-change-me`
+* **Regular User**: `admin`
+* **Regular User Password**: `change-me`
