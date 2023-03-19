@@ -20,7 +20,7 @@ services:
       - DB_ROOT_PASSWORD=${DB_ROOT_PASSWORD:-root}
       - DB_USER=${DB_USER:-admin}
       - DB-PASSWORD=${DB_PASSWORD:-change-me}
-    container_name: php
+    container_name: ${DOCKER_PREFIX:-dev-}php
     restart: unless-stopped
   ### CADDY ##################
   caddy:
@@ -45,11 +45,11 @@ services:
     environment:
       - TZ=${TZ:-America/New_York}
       - CF_API_TOKEN=${CF_API_TOKEN}
-    container_name: caddy
+    container_name: ${DOCKER_PREFIX:-dev-}caddy
     restart: unless-stopped
   ### MARIADB ################
   db:
-    image: mariadb:${MARIADB_VERSION:-10.11.2}
+    image: mariadb:${DB_VERSION:-10.11.2}
     networks:
       - backend
     ports:
@@ -58,16 +58,16 @@ services:
       - db-data:/config
     environment:
       - TZ=${TZ:-America/New_York}
-      - DB_ROOT_PASSWORD=${DB_ROOT_PASSWORD:-root-change-me}
-      - DB_USER=${DB_USER:-root}
-      - DB-PASSWORD=${DB_PASSWORD:-change-me}
-    container_name: db
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-root-change-me}
+      - MYSQL_USER=${MYSQL_USER:-root}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-change-me}
+    container_name: ${DOCKER_PREFIX:-dev-}db
     restart: unless-stopped
 networks:
   frontend:
-    name: frontend
+    name: ${DOCKER_PREFIX:-dev-}frontend
   backend:
-    name: backend
+    name: ${DOCKER_PREFIX:-dev-}backend
 volumes:
   caddy-config:
   caddy-data:

@@ -4,6 +4,12 @@ Caddy-Stack
 
 Under active development. Not ready for use.
 
+A docker compose file to build 3 containers:
+
+1. Caddy Server
+2. PHP
+3. MariaDB
+
 Pre-requisites
 --------------
 1. `SSH` access to server with `sudo` privileges
@@ -31,6 +37,13 @@ cd caddy-stack
 nano caddy/Caddyfile
 # Edit and save example `.env` to match your needs
 nano .env
-podman-compose up --build
+podman-compose --build
 ```
 Copy website files into `/path/to/desired/base/directory/caddy-stack/websites/`
+
+Default MariaDB Information
+--------------------------
+**Root User**: `root`
+**Root User Password**: `root-change-me`
+**Regular User**: `admin`
+**Regular User Password**: `change-me`
