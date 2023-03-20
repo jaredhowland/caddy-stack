@@ -55,7 +55,7 @@ services:
     ports:
       - "${DB_PORT:-3306}:3306"
     volumes:
-      - db-data:/config
+      - db-data:/data
     environment:
       - TZ=${TZ:-America/New_York}
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-root-change-me}
