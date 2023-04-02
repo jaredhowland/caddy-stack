@@ -21,7 +21,6 @@ services:
       - DB_USER=${DB_USER:-admin}
       - DB-PASSWORD=${DB_PASSWORD:-change-me}
     container_name: ${DOCKER_PREFIX:-dev-}php
-    restart: unless-stopped
   ### CADDY ##################
   caddy:
     build:
@@ -46,7 +45,6 @@ services:
       - TZ=${TZ:-America/New_York}
       - CF_API_TOKEN=${CF_API_TOKEN}
     container_name: ${DOCKER_PREFIX:-dev-}caddy
-    restart: unless-stopped
   ### MARIADB ################
   db:
     image: mariadb:${DB_VERSION:-10.11.2}
@@ -62,7 +60,6 @@ services:
       - MYSQL_USER=${MYSQL_USER:-root}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD:-change-me}
     container_name: ${DOCKER_PREFIX:-dev-}db
-    restart: unless-stopped
 networks:
   frontend:
     name: ${DOCKER_PREFIX:-dev-}frontend

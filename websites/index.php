@@ -6,6 +6,6 @@
 <h1>Caddy Stack is up and running!</h1>
 <p>Caddy with PHP and MariaDB.</p>
 
-<?php phpinfo(); ?>
+<?php echo 'Hello, world!'; ?>
 
 </html>

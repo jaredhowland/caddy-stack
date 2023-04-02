@@ -7,5 +7,10 @@ FROM php:$PHP_VERSION-$PHP_VARIANT
 
 MAINTAINER Jared Howland <caddy-stack@jaredhowland.com>
 
+ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+
 ARG PHP_EXTENSIONS
-RUN docker-php-ext-install $PHP_EXTENSIONS
+RUN apk add nodejs npm -U shadow && \
+    usermod -u 1000 www-data && \
+    chmod +x /usr/local/bin/install-php-extensions && \
+    install-php-extensions $PHP_EXTENSIONS
