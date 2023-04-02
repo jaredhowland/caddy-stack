@@ -8,7 +8,7 @@
 # this machine's public IP, then replace ":80" below with your
 # domain name.
 
-DOMAIN.TLD {
+(website) {
     # Setup Cloudflare so certificates can be auto-issued and renewed
     tls email@example.com {
       dns cloudflare {env.CF_API_TOKEN}
@@ -16,9 +16,6 @@ DOMAIN.TLD {
 
     # Compress files
     encode zstd gzip
-
-    # Set this path to your site's directory.
-    root * /var/www/html/
 
     # Serve a PHP site through php-fpm:
     php_fastcgi php:9000 {
@@ -34,6 +31,20 @@ DOMAIN.TLD {
 
     # Enable the static file server.
     file_server
+}
+
+DOMAIN1.TLD {
+    import website
+
+    # Set this path to your site's directory.
+    root * /var/www/html/DOMAIN1.TLD/public_html
+}
+
+DOMAIN2.TLD {
+    import website
+
+    # Set this path to your site's directory.
+    root * /var/www/html/DOMAIN2.TLD/public_html
 }
 
 # Refer to the Caddy docs for more information:
